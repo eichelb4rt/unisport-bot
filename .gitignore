@@ -7,3 +7,5 @@ build
 
 # secrets
 .env
+bookings.json
+result.png

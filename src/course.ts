@@ -5,24 +5,24 @@ export class Course {
     readonly detail: string;
     readonly day: string;
     readonly time: string;
-    readonly duration: string;
+    readonly location: string;
     readonly guidance: string;
     readonly cost: string | number;
     readonly bookable: boolean;
 
-    constructor(number: number, detail: string, day: string, time: string, duration: string, guidance: string, cost: string | number, bookable: boolean) {
+    constructor(number: number, detail: string, day: string, time: string, location: string, guidance: string, cost: string | number, bookable: boolean) {
         this.number = number;
         this.detail = detail;
         this.day = day;
         this.time = time;
-        this.duration = duration;
+        this.location = location;
         this.guidance = guidance;
         this.cost = cost;
         this.bookable = bookable;
     }
 
     public toString = (): string => {
-        return `Kurs (id: ${this.number}, detail: ${this.detail}, day: ${this.day}, time: ${this.time}, duration: ${this.duration}, guidance: ${this.guidance}, cost: ${this.cost}, bookable: ${this.bookable})`;
+        return `Kurs (course number: ${this.number}, detail: ${this.detail}, day: ${this.day}, time: ${this.time}, location: ${this.location}, guidance: ${this.guidance}, cost: ${this.cost}, bookable: ${this.bookable})`;
     }
 
     static async fromElement(page: Page, id: number): Promise<Course> {
@@ -31,12 +31,12 @@ export class Course {
         const detail = await this.getContent(page, siblings[0]);
         const day = await this.getContent(page, siblings[1]);
         const time = await this.getContent(page, siblings[2]);
-        const duration = await this.getContent(page, siblings[3]);
+        const location = await this.getContent(page, siblings[3]);
         const guidance = await this.getContent(page, siblings[4]);
         const cost = await this.getContent(page, siblings[5]);
         const bookingContent = await this.getContent(page, siblings[6]);
         const bookable = bookingContent == "buchen";
-        return new Course(id, detail, day, time, duration, guidance, cost, bookable);
+        return new Course(id, detail, day, time, location, guidance, cost, bookable);
     }
 
     static async getContent(page: Page, element: ElementHandle<Element>): Promise<string> {
