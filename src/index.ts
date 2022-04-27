@@ -1,16 +1,14 @@
 "use strict";
 
-import fs from 'fs';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { Page } from 'puppeteer'
 import 'dotenv/config'
 import { UnisportPage } from './unisport.js';
 
 puppeteer.use(StealthPlugin());
 
 (async () => {
-    const enbale_booking = false;
+    const enbale_booking = true;
     const email = process.env.MAIL;
     const password = process.env.PW;
 
