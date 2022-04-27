@@ -1,32 +1,42 @@
 "use strict";
 
+import fs from 'fs';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { Page } from 'puppeteer'
 import 'dotenv/config'
+import { UnisportPage } from './unisport.js';
 
 puppeteer.use(StealthPlugin());
 
-async function instant_click(page: Page, selector: string) {
-    return page.evaluate((_selector) => {
-        (document.querySelector(_selector) as HTMLElement).click();
-    }, selector);
-}
-
 (async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    const enbale_booking = false;
+    const email = process.env.MAIL;
+    const password = process.env.PW;
 
-    await page.goto("https://www.hochschulsportbuchung.uni-jena.de/angebote/aktueller_zeitraum/index.html");
-    console.log("went to site.");
+    const browser = await puppeteer.launch({ headless: true });
+    const page = new UnisportPage(browser);
 
-    await instant_click(page, "[name=BS_Kursid_101861]");
-    console.log("clicked button.");
+    console.log("launching...");
+    await page.launch();
 
-    await page.screenshot({
-        fullPage: true,
-        path: "example.png"
-    });
+    console.log("getting course...")
+    const course = await page.get_course(10016);
+    console.log(course);
+    
+    if (course.bookable) {
+        console.log("course not bookable!");
+        return;
+    }
+    console.log("course bookable!");
+
+    if (enbale_booking) {
+        console.log("booking...");
+        await page.book(email, password);
+        console.log("taking a screenshot...");
+        await page.wait(2000);
+        await page.screenshot("result.png");
+    }
 
     await browser.close();
 })();
