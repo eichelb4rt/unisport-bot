@@ -21,10 +21,10 @@ export class UnisportPage {
         return this.#page.evaluate((el, attr) => el.getAttribute(attr), element, attribute);
     }
 
-    async launch() {
+    async launch(courseUrl: string) {
         // go to course and click on book
         this.#page = await this.#browser.newPage();
-        await this.#page.goto("https://www.hochschulsportbuchung.uni-jena.de/angebote/aktueller_zeitraum/_UNISPORT_Card_-_Zweifelder-_Voelkerball_dodge_ball_.html");
+        await this.#page.goto(courseUrl);
     }
 
     async goToBooking(course: Course) {

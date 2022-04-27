@@ -6,6 +6,6 @@ node_modules
 build
 
 # secrets
-.env
+config.json
 bookings.json
 result.png
