@@ -6,6 +6,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { UnisportPage } from './unisport.js';
 import { Bookings } from './bookings.js';
 import { Config } from './config.js';
+import { courseExists } from './course.js';
 
 puppeteer.use(StealthPlugin());
 
@@ -24,7 +25,13 @@ puppeteer.use(StealthPlugin());
     const page = new UnisportPage(browser);
     await page.launch(config.course_url);
 
+    // get course if existing
     console.log("getting course...")
+    if (!await page.courseExists(config.course_number)) {
+        console.log(`course number ${config.course_number} not found.`);
+        await browser.close();
+        return;
+    }
     const course = await page.getCourse(config.course_number);
     console.log(course);
 

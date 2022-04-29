@@ -17,6 +17,11 @@ async function getContent(page: Page, element: ElementHandle<Element>): Promise<
     return page.evaluate(el => el.textContent, element);
 }
 
+export async function courseExists(page: Page, id: number): Promise<boolean> {
+    const matchingCourses = await page.$x(`//*[@class = 'bs_sknr' and text()=${id}]`);
+    return matchingCourses.length > 0;
+}
+
 export async function getCourse(page: Page, id: number): Promise<Course> {
     const number_element = (await page.$x(`//*[@class = 'bs_sknr' and text()=${id}]`))[0];
     const siblings = await number_element.$x('following-sibling::*');
