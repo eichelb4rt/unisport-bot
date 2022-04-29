@@ -6,7 +6,6 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { UnisportPage } from './unisport.js';
 import { Bookings } from './bookings.js';
 import { Config } from './config.js';
-import { courseExists } from './course.js';
 
 puppeteer.use(StealthPlugin());
 
@@ -42,6 +41,7 @@ puppeteer.use(StealthPlugin());
         return;
     }
 
+    // here we check if we know that we already booked something
     console.log("getting bookable dates...");
     await page.goToBooking(course);
     const dates = await page.getAllBookableDates();
@@ -57,10 +57,13 @@ puppeteer.use(StealthPlugin());
         return;
     }
 
+    // now finally book a course
     if (config.enable_booking) {
+        // we'll just book the next available course
         const bookNext = toBook[0];
         console.log(`booking: ${bookNext}`);
         await page.book(bookNext, config.mail, config.password);
+        // also locally register that we booked it, no matter if we did it just now or earlier
         bookings.register(course.number, bookNext);
         if (await page.bookedSuccessfully()) {
             console.log("booked successfully!");
