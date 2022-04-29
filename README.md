@@ -4,16 +4,35 @@ Automatically signs into desired Unisport-Course.
 
 ## Usage
 
-Fill `config.json` with your credentials like in [`config-template.json`](config-template.json), then
+Fill `config.json` with your credentials like in [`config-template.json`](config-template.json):
+
+```json
+{
+	"course_url": "https://www.hochschulsportbuchung.uni-jena.de/angebote/aktueller_zeitraum/_UNISPORT_Card_-_Zweifelder-_Voelkerball_dodge_ball_.html",
+	"course_number": 10016,
+	"enable_booking": true,
+	"credentials": {
+		"mail": "<MAIL>",
+		"password": "<PASSWORD>"
+	}
+}
+```
+
+install dependencies for puppeteer
 
 ```text
-// install dependencies for puppeteer
 sudo apt-get install libnss3 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev
+```
 
-// install dependencies for node project
+install dependencies for node project
+
+```text
 npm i
+```
 
-// build and run
+build and run
+
+```text
 npm run start
 ```
 

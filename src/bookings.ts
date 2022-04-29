@@ -1,3 +1,5 @@
+"use strict";
+
 import fs from 'fs';
 
 export class Bookings {
@@ -23,7 +25,7 @@ export class Bookings {
         return bookedDates.includes(date);
     }
 
-    book(course: number, date: string) {
+    register(course: number, date: string) {
         // don't do anything if it's already booked
         if (this.isBooked(course, date)) return;
         // create an array if nothing is booked yet

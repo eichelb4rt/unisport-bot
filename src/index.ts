@@ -54,7 +54,13 @@ puppeteer.use(StealthPlugin());
         const bookNext = toBook[0];
         console.log(`booking: ${bookNext}`);
         await page.book(bookNext, config.mail, config.password);
-        bookings.book(course.number, bookNext);
+        bookings.register(course.number, bookNext);
+        if (await page.bookedSuccessfully()) {
+            console.log("booked successfully!");
+        } else {
+            console.log("you already booked this course!");
+        }
+
         console.log("taking a screenshot...");
         await page.wait(2000);
         await page.screenshot("result.png");

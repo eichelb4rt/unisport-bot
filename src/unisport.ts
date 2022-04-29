@@ -1,5 +1,7 @@
+"use strict";
+
 import { Browser, ElementHandle, Page } from "puppeteer";
-import { Course } from "./course.js";
+import { Course, getCourse } from "./course.js";
 
 export class UnisportPage {
     readonly #browser: Browser;
@@ -71,8 +73,16 @@ export class UnisportPage {
         await this.#click("input[type=submit]", true);
     }
 
+    async bookedSuccessfully(): Promise<boolean> {
+        const alreadyBooked = await this.#page.$x("//*[contains(text(),'bereits seit')]");
+        if (alreadyBooked) {
+            return false;
+        }
+        return true;
+    }
+
     async getCourse(id: number): Promise<Course> {
-        return Course.fromElement(this.#page, id);
+        return getCourse(this.#page, id);
     }
 
     async wait(ms: number) {

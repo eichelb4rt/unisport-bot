@@ -1,6 +1,8 @@
+"use strict";
+
 import { ElementHandle, Page } from "puppeteer";
 
-export class Course {
+export interface Course {
     readonly number: number;
     readonly detail: string;
     readonly day: string;
@@ -9,37 +11,32 @@ export class Course {
     readonly guidance: string;
     readonly cost: string | number;
     readonly bookable: boolean;
+}
 
-    constructor(number: number, detail: string, day: string, time: string, location: string, guidance: string, cost: string | number, bookable: boolean) {
-        this.number = number;
-        this.detail = detail;
-        this.day = day;
-        this.time = time;
-        this.location = location;
-        this.guidance = guidance;
-        this.cost = cost;
-        this.bookable = bookable;
-    }
+async function getContent(page: Page, element: ElementHandle<Element>): Promise<string> {
+    return page.evaluate(el => el.textContent, element);
+}
 
-    public toString = (): string => {
-        return `Kurs (course number: ${this.number}, detail: ${this.detail}, day: ${this.day}, time: ${this.time}, location: ${this.location}, guidance: ${this.guidance}, cost: ${this.cost}, bookable: ${this.bookable})`;
-    }
+export async function getCourse(page: Page, id: number): Promise<Course> {
+    const number_element = (await page.$x(`//*[@class = 'bs_sknr' and text()=${id}]`))[0];
+    const siblings = await number_element.$x('following-sibling::*');
+    const detail = await getContent(page, siblings[0]);
+    const day = await getContent(page, siblings[1]);
+    const time = await getContent(page, siblings[2]);
+    const location = await getContent(page, siblings[3]);
+    const guidance = await getContent(page, siblings[4]);
+    const cost = await getContent(page, siblings[5]);
+    const bookingContent = await getContent(page, siblings[6]);
+    const bookable = bookingContent == "buchen";
 
-    static async fromElement(page: Page, id: number): Promise<Course> {
-        const number_element = (await page.$x(`//*[@class = 'bs_sknr' and text()=${id}]`))[0];
-        const siblings = await number_element.$x('following-sibling::*');
-        const detail = await this.getContent(page, siblings[0]);
-        const day = await this.getContent(page, siblings[1]);
-        const time = await this.getContent(page, siblings[2]);
-        const location = await this.getContent(page, siblings[3]);
-        const guidance = await this.getContent(page, siblings[4]);
-        const cost = await this.getContent(page, siblings[5]);
-        const bookingContent = await this.getContent(page, siblings[6]);
-        const bookable = bookingContent == "buchen";
-        return new Course(id, detail, day, time, location, guidance, cost, bookable);
-    }
-
-    static async getContent(page: Page, element: ElementHandle<Element>): Promise<string> {
-        return page.evaluate(el => el.textContent, element);
-    }
+    return {
+        number: id,
+        detail: detail,
+        day: day,
+        time: time,
+        location: location,
+        guidance: guidance,
+        cost: cost,
+        bookable: bookable
+    };
 }
