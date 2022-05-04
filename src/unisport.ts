@@ -38,12 +38,20 @@ export class UnisportPage {
         const courseIdElement = siblings[0];
         // now we want to get the name of the booking button (it's unique)
         const courseId = await this.#getAttribute(courseIdElement, "name");
-        // click on book
+        // click on book (save the number of current pages)
+        const n_pages_before = (await this.#browser.pages()).length;
         await this.#click(`[name=${courseId}]`);
-        // wait a bit and get the newly opened page
-        await this.wait(2000);
-        const pages = await this.#browser.pages();
+        // wait until a new page opened
+        let pages = await this.#browser.pages();
+        while (pages.length == n_pages_before) {
+            console.log("Waiting for booking page to show up...");
+            await this.wait(1000);
+            pages = await this.#browser.pages();
+        }
+        // select the new page
         this.#page = pages[pages.length - 1];
+        // and then wait again for a short time (the reload trick doesn't really work here, idk why)
+        await this.wait(1000);
     }
 
     async getAllBookableDates() {

@@ -1,6 +1,7 @@
 "use strict";
 
 import fs from 'fs';
+import { DateTime } from 'luxon';
 
 export class Bookings {
     readonly #jsonPath = 'bookings.json';
@@ -45,5 +46,17 @@ export class Bookings {
             });
         }
         return JSON.stringify(bookingsJSON, null, 2);
+    }
+
+    lastBooked(course: number): DateTime {
+        const dates = this.#bookings[course].map(s => Bookings.#toDate(s).toMillis());
+        const maxDate = Math.max(...dates);
+        return DateTime.fromMillis(maxDate);
+    }
+
+    static #toDate(dateString: string): DateTime {
+        // remove "BS_Termin_" at the start of the date string
+        dateString = dateString.slice("BS_Termin_".length);
+        return DateTime.fromFormat(dateString, "yyyy-MM-dd", { zone: "Europe/Berlin" });
     }
 }
