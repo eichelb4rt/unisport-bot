@@ -108,7 +108,7 @@ puppeteer.use(StealthPlugin());
     // if our last booking was on a past day, book today.
     if (DateTime.now().startOf("day") > lastBooked.startOf("day")) await book();
     // now we know that today is already booked. wait until the end of the course today and book the next course.
-    const bookingTime = nextEnd.plus({ minutes: 5 });
+    const bookingTime = nextStart.plus({ minutes: 5 });
     console.log(`Waiting until ${bookingTime} (That is ${bookingTime.toJSDate().toLocaleString()} here.).`);
     // if the end of the course is already over, just book the next course now. otherwise book as planned (by schedule)
     if (bookingTime <= DateTime.now()) await book();
