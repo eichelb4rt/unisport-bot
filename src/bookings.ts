@@ -63,7 +63,6 @@ export namespace Bookings {
 
     export async function book(courseInfo: CourseInfo) {
         // create browser and find the course
-        console.log("launching...");
         const browser = await puppeteer.launch({ headless: true });
         const page = new UnisportPage(browser);
         await page.launch(courseInfo.url);

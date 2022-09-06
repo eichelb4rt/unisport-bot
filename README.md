@@ -8,8 +8,6 @@ Fill `config.json` with your credentials like in [`config-template.json`](config
 
 ```json
 {
-	"course_url": "https://www.hochschulsportbuchung.uni-jena.de/angebote/aktueller_zeitraum/_UNISPORT_Card_-_Zweifelder-_Voelkerball_dodge_ball_.html",
-	"course_number": 10016,
 	"enable_booking": true,
 	"credentials": {
 		"mail": "<MAIL>",
