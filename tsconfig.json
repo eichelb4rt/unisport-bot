@@ -15,7 +15,8 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "alwaysStrict": true
   },
   "ts-node": {
     "esm": true

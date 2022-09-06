@@ -1,5 +1,3 @@
-"use strict";
-
 import { Browser, ElementHandle, Page } from "puppeteer";
 import { Course, courseExists, getCourse } from "./course.js";
 

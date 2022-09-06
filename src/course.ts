@@ -1,5 +1,3 @@
-"use strict";
-
 import { DateTime } from "luxon";
 import { ElementHandle, Page } from "puppeteer";
 
@@ -12,6 +10,12 @@ export interface Course {
     readonly duration: string;
     readonly guidance: string;
     readonly bookable: boolean;
+}
+
+export interface CourseInfo {
+    readonly name: string;
+    readonly url: string;
+    readonly number: number;
 }
 
 async function getContent(page: Page, element: ElementHandle<Element>): Promise<string> {
@@ -45,53 +49,4 @@ export async function getCourse(page: Page, id: number): Promise<Course> {
         guidance: guidance,
         bookable: bookable
     };
-}
-
-const dayNumber: { [day: string]: number } = {
-    "Mo": 0,
-    "Di": 1,
-    "Mi": 2,
-    "Do": 3,
-    "Fr": 4,
-    "Sa": 5,
-    "So": 6
-};
-
-const longdayNumber: { [day: string]: number } = {
-    "Monday": 0,
-    "Tuesday": 1,
-    "Wednesday": 2,
-    "Thursday": 3,
-    "Friday": 4,
-    "Saturday": 5,
-    "Sunday": 6
-};
-
-export function nextCourseEnd(course: Course): DateTime {
-    const [_, end] = course.time.split('-');
-    return nextDayAtTime(course.day, end);
-}
-
-export function nextCourseStart(course: Course): DateTime {
-    const [start, _] = course.time.split('-');
-    return nextDayAtTime(course.day, start);
-}
-
-function nextDayAtTime(day: string, time: string): DateTime {
-    // get time in Germany
-    const now = DateTime.local().setZone("Europe/Berlin");
-    // 0 = Monday, 1 = Tuesday, ..., 6 = Sunday
-    const today = longdayNumber[now.weekdayLong];
-    const courseDay = dayNumber[day];
-    // get day until it is the course day again. +7 is a buffer so the result is alway positive.
-    const diff = (courseDay - today + 7) % 7;
-    // split time
-    const [hour, minute] = time.split(':').map(x => parseInt(x));
-    // construct next course date
-    let nextDay = now.plus({ days: diff });
-    nextDay = nextDay.set({ hour: hour, minute: minute, second: 0, millisecond: 0 });
-    if (now >= nextDay) {
-        nextDay = nextDay.plus({ days: 7 });
-    }
-    return nextDay;
 }

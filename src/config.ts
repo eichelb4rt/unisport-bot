@@ -1,20 +1,17 @@
-"use strict";
-
 import fs from 'fs';
+import { exit } from 'process';
 
-export class Config {
-    readonly course_url: string
-    readonly course_number: number
-    readonly enable_booking: boolean
-    readonly mail: string
-    readonly password: string
+export namespace Config {
+    const CONFIG_PATH = 'config.json';
 
-    constructor(configPath: string) {
-        const configJSON = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-        this.course_url = configJSON.course_url;
-        this.course_number = configJSON.course_number;
-        this.enable_booking = configJSON.enable_booking;
-        this.mail = configJSON.credentials.mail;
-        this.password = configJSON.credentials.password;
+    // read config
+    if (!fs.existsSync(CONFIG_PATH)) {
+        console.log(`You need a '${CONFIG_PATH}' file!`);
+        exit(1);
     }
+    const configJSON = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+
+    export const enable_booking: boolean = configJSON.enable_booking;
+    export const mail: string = configJSON.credentials.mail;
+    export const password: string = configJSON.credentials.password;
 }
