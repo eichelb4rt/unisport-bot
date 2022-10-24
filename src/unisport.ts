@@ -1,5 +1,5 @@
 import { Browser, ElementHandle, Page } from "puppeteer";
-import { Course, courseExists, getCourse } from "./course.js";
+import { Course, Courses } from "./course.js";
 
 export class UnisportPage {
     readonly #browser: Browser;
@@ -87,11 +87,11 @@ export class UnisportPage {
     }
 
     async courseExists(id: number): Promise<boolean> {
-        return courseExists(this.#page, id);
+        return Courses.courseExists(this.#page, id);
     }
 
     async getCourse(id: number): Promise<Course> {
-        return getCourse(this.#page, id);
+        return Courses.getCourse(this.#page, id);
     }
 
     async wait(ms: number) {

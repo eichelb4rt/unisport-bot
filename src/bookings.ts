@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { DateTime } from 'luxon';
-import { exit } from 'process';
 import puppeteer from 'puppeteer-extra';
 import { Config } from './config.js';
 import { CourseInfo } from './course.js';
