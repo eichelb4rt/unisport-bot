@@ -12,8 +12,8 @@ export namespace Bookings {
     // map from course names to all booked dates in this course
     let bookings: { [course: number]: string[] } = {};
     if (!fs.existsSync(JSON_PATH)) {
-        console.log(`You need a '${JSON_PATH}' file!`);
-        exit(1);
+        console.log(`'${JSON_PATH}' created.`);
+        fs.writeFileSync(JSON_PATH, toJSON());
     }
 
     const bookingsJSON = JSON.parse(fs.readFileSync(JSON_PATH, 'utf-8'));
@@ -49,7 +49,8 @@ export namespace Bookings {
         return JSON.stringify(bookingsJSON, null, 2);
     }
 
-    export function lastBooked(course: number): DateTime {
+    export function lastBooked(course: number): DateTime | undefined {
+        if (bookings[course] === undefined) return undefined;
         const dates = bookings[course].map(s => toDate(s).toMillis());
         const maxDate = Math.max(...dates);
         return DateTime.fromMillis(maxDate);

@@ -69,7 +69,8 @@ export class Scheduler {
         const lastBooked = Bookings.lastBooked(courseInfo.number);
 
         // if the last booking is on a future day, we don't even have to start the browser.
-        if (DateTime.now().startOf("day") < lastBooked.startOf("day")) {
+        // (if there even is a last booking)
+        if (lastBooked !== undefined && DateTime.now().startOf("day") < lastBooked.startOf("day")) {
             return;
         }
 
