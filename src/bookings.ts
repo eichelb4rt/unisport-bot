@@ -89,31 +89,31 @@ export namespace Bookings {
         }
 
         // here we check if we know that we already booked something
-        console.log("getting bookable dates...");
+        console.log(`${courseInfo.name}: getting bookable dates...`);
         await page.goToBooking(course);
         const dateStrings = await page.getAllBookableDates();
-        console.log(`bookable dates: ${dateStrings.length > 0 ? dateStrings : 'none'}`);
+        console.log(`${courseInfo.name}: bookable dates: ${dateStrings.length > 0 ? dateStrings : 'none'}`);
 
         const toBook = dateStrings.filter(d => !isBooked(course.number, d));
-        console.log(`not booked yet: ${toBook.length > 0 ? toBook : 'none'}`);
+        console.log(`${courseInfo.name}: not booked yet: ${toBook.length > 0 ? toBook : 'none'}`);
 
         // if we can't book anything, we might as well just stop
         if (toBook.length == 0) {
-            console.log("Nothing to book.");
+            console.log(`${courseInfo.name}: Nothing to book.`);
             await browser.close();
             return;
         }
 
         for (const booking of toBook) {
             // now finally book a course
-            console.log(`booking: ${booking}`);
+            console.log(`${courseInfo.name}: booking: ${booking}`);
             await page.book(booking, Config.mail, Config.password);
             // also locally register that we booked it, no matter if we did it just now or earlier
             register(course.number, booking);
             if (await page.bookedSuccessfully()) {
-                console.log("Booked successfully!");
+                console.log(`${courseInfo.name}: Booked successfully!`);
             } else {
-                console.log("You already booked this course!");
+                console.log(`${courseInfo.name}: You already booked this course!`);
             }
         }
         // we're done with everything now. it's ok.
