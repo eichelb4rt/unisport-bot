@@ -108,12 +108,17 @@ export namespace Bookings {
             // now finally book a course
             console.log(`${courseInfo.name}: booking: ${booking}`);
             await page.book(booking, Config.mail, Config.password);
+            // if there's still a captcha, that means we couldn't solve it
+            if (await page.captchaFound()) {
+                console.log(`${courseInfo.name}: Couldn't book because of captcha.`);
+                continue;
+            }
             // also locally register that we booked it, no matter if we did it just now or earlier
             register(course.number, booking);
-            if (await page.bookedSuccessfully()) {
-                console.log(`${courseInfo.name}: Booked successfully!`);
-            } else {
+            if (await page.alreadyBooked()) {
                 console.log(`${courseInfo.name}: You already booked this course!`);
+            } else {
+                console.log(`${courseInfo.name}: Booked successfully!`);
             }
         }
         // we're done with everything now. it's ok.

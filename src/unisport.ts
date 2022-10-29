@@ -21,6 +21,15 @@ export class UnisportPage {
         return this.#page.evaluate((el, attr) => el.getAttribute(attr), element, attribute);
     }
 
+    async #exists(selector: string): Promise<boolean> {
+        return this.#page.$eval(selector, () => true).catch(() => false);
+    }
+
+    async #xists(selector: string): Promise<boolean> {
+        // exists but with x-path
+        return await this.#page.$x(selector) !== null;
+    }
+
     async launch(courseUrl: string) {
         // go to course and click on book
         this.#page = await this.#browser.newPage();
@@ -71,19 +80,27 @@ export class UnisportPage {
         await this.#page.keyboard.type(password);
         // submit
         await this.#click("input[title='Continue booking']", true);
+        // say that we in fact have a unisport card
+        await this.#page.evaluate("document.querySelector('[name=statusorig]').value = 'Card'");
         // check all the checkboxes
         await this.#page.$$eval("input[type='checkbox']", (checks) => checks.forEach((c: HTMLInputElement) => c.checked = true));
         // submit again
         await this.#click("input[title='Continue booking']", true);
+        // check if there's a captcha
+        if (await this.captchaFound()) {
+            console.log("There's a captcha.");
+        }
         // submit again
         await this.#click("input[type=submit]", true);
     }
 
-    async bookedSuccessfully(): Promise<boolean> {
+    async alreadyBooked(): Promise<boolean> {
         // this is looking for a text, saying it was already booked
-        const alreadyBooked = await this.#page.$x("//*[contains(text(),'bereits seit')]");
-        // if it is not found, return true
-        return alreadyBooked == null;
+        return this.#xists("//*[contains(text(),'bereits seit')]");
+    }
+
+    async captchaFound(): Promise<boolean> {
+        return this.#exists("#bs_captcha");
     }
 
     async courseExists(id: number): Promise<boolean> {
